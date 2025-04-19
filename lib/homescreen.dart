@@ -76,7 +76,7 @@ class HomeScreen extends StatelessWidget {
                     title: 'Your Profile',
                     subtitle: 'Track your progress',
                     onTap: () {
-                      // To be implemented
+                      Navigator.pushNamed(context, '/profile');
                     },
                   ),
                 ],

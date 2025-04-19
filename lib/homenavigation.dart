@@ -10,7 +10,6 @@ class HomeNavigationDrawer extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Top: Leaderboard
           Column(
             children: [
               const SizedBox(height: 60),
@@ -26,13 +25,12 @@ class HomeNavigationDrawer extends StatelessWidget {
                 leading: const Icon(Icons.person),
                 title: const Text('Your Profile'),
                 onTap: () {
-                  // Not functional yet
+                  Navigator.pop(context); // close drawer
+                  Navigator.pushNamed(context, '/profile'); // 🔥 navigate to profile
                 },
               ),
             ],
           ),
-
-          // Bottom: Settings
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ListTile(

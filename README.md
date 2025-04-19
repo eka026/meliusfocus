@@ -58,4 +58,3 @@ motivated through the study sessions.
 - **Managing App Lock Permissions:** Handling restrictions on app blocking.  
 - **Balancing Gaming and Productivity:** Designing rewards that keep users motivated  
   without being distracting.  
-

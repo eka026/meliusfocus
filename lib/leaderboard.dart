@@ -32,10 +32,8 @@ class LeaderboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Leaderboard"),
         leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            // TODO: Add drawer or settings menu
-          },
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Column(

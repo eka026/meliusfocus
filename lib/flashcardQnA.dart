@@ -1,45 +1,72 @@
 import 'package:flutter/material.dart';
 
 class FlashcardScreen extends StatefulWidget {
+  final List<Map<String, String>> flashcards;
+
+  const FlashcardScreen({super.key, required this.flashcards});
+
   @override
-  _FlashcardScreenState createState() => _FlashcardScreenState();
+  State<FlashcardScreen> createState() => _FlashcardScreenState();
 }
 
 class _FlashcardScreenState extends State<FlashcardScreen> {
+  int currentIndex = 0;
   bool showQuestion = true;
-  final String question = "What is the capital of France?";
-  final String answer = "Paris";
 
   void flipCard() {
-    setState(() => showQuestion = !showQuestion);
+    setState(() {
+      showQuestion = !showQuestion;
+    });
+  }
+
+  void nextCard() {
+    setState(() {
+      showQuestion = true;
+      currentIndex = (currentIndex + 1) % widget.flashcards.length;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.flashcards.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text('Flashcards')),
+        body: Center(child: Text('No flashcards in this deck.')),
+      );
+    }
+
+    final current = widget.flashcards[currentIndex];
+
     return Scaffold(
-      appBar: AppBar(title: Text("Flashcard")),
-      body: Center(
-        child: GestureDetector(
-          onTap: flipCard,
-          child: Container(
-            padding: EdgeInsets.all(20),
-            margin: EdgeInsets.all(16),
-            width: double.infinity,
-            height: 300,
-            decoration: BoxDecoration(
-              color: Colors.orange.shade100,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 8)],
-            ),
-            child: Center(
-              child: Text(
-                showQuestion ? question : answer,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+      appBar: AppBar(title: Text('Flashcards')),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: flipCard,
+            child: Container(
+              margin: EdgeInsets.all(16),
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.orange.shade100,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
+              ),
+              child: Center(
+                child: Text(
+                  showQuestion ? current['q']! : current['a']!,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),
-        ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: nextCard,
+            child: Text('Next'),
+          ),
+        ],
       ),
     );
   }

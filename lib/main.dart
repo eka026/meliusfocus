@@ -5,6 +5,8 @@ import 'flashcardQnA.dart';
 import 'FocusMode.dart';
 import 'leaderboard.dart';
 import 'settings.dart';
+import 'login_signup_screen.dart';
+import 'profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,14 +20,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Melius Focus',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/login', // or '/' if you prefer to land on Home directly
       routes: {
+        '/login': (context) => const LoginSignupScreen(),
         '/': (context) => const HomeScreen(),
         '/decks': (context) => FlashcardDecksScreen(),
-        '/flashcard': (context) => FlashcardScreen(),
         '/focus': (context) => FocusModeScreen(),
         '/leaderboard': (context) => const LeaderboardScreen(),
         '/settings': (context) => const SettingsScreen(),
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }
