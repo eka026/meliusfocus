@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'flashcardQnA.dart';
+import 'deck_manager.dart';
 
 class FlashcardDecksScreen extends StatefulWidget {
   @override
@@ -93,16 +94,42 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (newDeckName.trim().isNotEmpty) {
-                  setState(() {
-                    decks.add({
-                      'title': newDeckName.trim(),
-                      'flashcards': <Map<String, String>>[], // explicitly typed
-                      'review': 0,
-                    });
-                  });
+                String cleanedInput = newDeckName
+                    .replaceAll(RegExp(r'\s+'), '')
+                    .replaceAll(RegExp(r'[^\w]+'), '')
+                    .toLowerCase();
+
+                if (cleanedInput.isEmpty) return;
+
+                bool exists = decks.any((deck) {
+                  String normalized = deck['title']
+                      .toString()
+                      .replaceAll(RegExp(r'\s+'), '')
+                      .replaceAll(RegExp(r'[^\w]+'), '')
+                      .toLowerCase();
+                  return normalized == cleanedInput;
+                });
+
+                if (exists) {
                   Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('You already created this deck.'),
+                      backgroundColor: Colors.red.shade400,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                  return;
                 }
+
+                setState(() {
+                  decks.add({
+                    'title': newDeckName.trim(),
+                    'flashcards': <Map<String, String>>[],
+                    'review': 0,
+                  });
+                });
+                Navigator.pop(context);
               },
               child: const Text('Create'),
             ),
@@ -122,6 +149,25 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
       MaterialPageRoute(
         builder: (_) => FlashcardScreen(
           flashcards: List<Map<String, String>>.from(decks[index]['flashcards']),
+        ),
+      ),
+    );
+  }
+
+  void _manageDecks() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => DeckManagerScreen(
+          decks: decks,
+          onDeleteDeck: (index) {
+            setState(() => decks.removeAt(index));
+          },
+          onDeleteFlashcard: (deckIndex, cardIndex) {
+            setState(() {
+              decks[deckIndex]['flashcards'].removeAt(cardIndex);
+            });
+          },
         ),
       ),
     );
@@ -154,17 +200,17 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(deck['title'],
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(height: 4),
-                                  Text(
-                                      'Total cards: ${deck['flashcards'].length}'),
-                                  Text('Review: ${deck['review']}'),
-                                ]),
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(deck['title'],
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                SizedBox(height: 4),
+                                Text('Total cards: ${deck['flashcards'].length}'),
+                                Text('Review: ${deck['review']}'),
+                              ],
+                            ),
                             ElevatedButton(
                               onPressed: () => _addFlashcard(index),
                               child: Text('Add'),
@@ -173,7 +219,7 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
                                 foregroundColor: Colors.black,
                                 shape: StadiumBorder(),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -202,7 +248,7 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: _manageDecks,
               icon: Icon(Icons.settings),
               label: Text('Manage your decks'),
               style: ElevatedButton.styleFrom(
