@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_gaps.dart';
 import '../utils/app_text_styles.dart';
-import '../loginroutes.dart'; // if you don’t have this, remove the routes and use raw strings
-import '../widgets/primary_button.dart'; // if missing, we can replace this with a regular ElevatedButton
 
 class LoginSignupScreen extends StatefulWidget {
   const LoginSignupScreen({super.key});
@@ -27,12 +25,20 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 🧼 Removed logo block that was crashing
-
-              Text('Welcome!', style: AppTextStyles.title),
+              Image.asset(
+                'lib/assets/logo.png',
+                width: 100,
+                height: 100,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Melius Focus',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Gaps.v32,
-
-              // --- Tabs (Log in | Sign up) ---
               Container(
                 height: 40,
                 decoration: BoxDecoration(
@@ -47,20 +53,23 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 ),
               ),
               Gaps.v32,
-
-              // --- Form ---
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
                       controller: _emailCtrl,
-                      decoration: const InputDecoration(labelText: 'Email'),
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        hintText: 'example@example.com',
+                      ),
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Enter email';
+                        if (v == null || v.isEmpty) {
+                          return 'Please enter your email (e.g. example@example.com)';
+                        }
                         if (!RegExp(r'^\S+@\S+\.\S+$').hasMatch(v)) {
-                          return 'Invalid email';
+                          return 'Invalid email. Correct format: example@example.com';
                         }
                         return null;
                       },
@@ -68,20 +77,24 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                     Gaps.v16,
                     TextFormField(
                       controller: _pwdCtrl,
-                      decoration: const InputDecoration(labelText: 'Password'),
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        hintText: 'At least 6 characters',
+                      ),
                       obscureText: true,
-                      validator: (v) =>
-                          v != null && v.length >= 6 ? null : 'Min 6 chars',
+                      validator: (v) {
+                        if (v == null || v.length < 6) {
+                          return 'Password must be at least 6 characters long';
+                        }
+                        return null;
+                      },
                     ),
                   ],
                 ),
               ),
               Gaps.v32,
-
-              // --- Forgot password (can keep or remove) ---
               InkWell(
                 onTap: () {
-                  // Navigator.pushNamed(context, routeForgotPwd); // remove if unused
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -93,8 +106,6 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 ),
               ),
               Gaps.v32,
-
-              // --- Primary button ---
               ElevatedButton(
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
@@ -136,14 +147,14 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
-      print("Logging in as: ${_emailCtrl.text}"); // Optional debug log
-      Navigator.pushReplacementNamed(context, '/'); // Goes to home
+      print("Logging in as: ${_emailCtrl.text}");
+      Navigator.pushReplacementNamed(context, '/');
     } else {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
           title: const Text('Form invalid'),
-          content: const Text('Please fix errors before continuing.'),
+          content: const Text('Please enter the email/password in correct format.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

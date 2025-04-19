@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'models/flashcard_model.dart';
 
 class FlashcardScreen extends StatefulWidget {
-  final List<Map<String, String>> flashcards;
+  final List<Flashcard> flashcards;
 
   const FlashcardScreen({super.key, required this.flashcards});
 
@@ -14,9 +15,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   bool showQuestion = true;
 
   void flipCard() {
-    setState(() {
-      showQuestion = !showQuestion;
-    });
+    setState(() => showQuestion = !showQuestion);
   }
 
   void nextCard() {
@@ -30,41 +29,41 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   Widget build(BuildContext context) {
     if (widget.flashcards.isEmpty) {
       return Scaffold(
-        appBar: AppBar(title: Text('Flashcards')),
-        body: Center(child: Text('No flashcards in this deck.')),
+        appBar: AppBar(title: const Text('Flashcards')),
+        body: const Center(child: Text('No flashcards in this deck.')),
       );
     }
 
     final current = widget.flashcards[currentIndex];
 
     return Scaffold(
-      appBar: AppBar(title: Text('Flashcards')),
+      appBar: AppBar(title: const Text('Flashcards')),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
             onTap: flipCard,
             child: Container(
-              margin: EdgeInsets.all(16),
-              padding: EdgeInsets.all(24),
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.orange.shade100,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
+                boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
               ),
               child: Center(
                 child: Text(
-                  showQuestion ? current['q']! : current['a']!,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  showQuestion ? current.question : current.answer,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: nextCard,
-            child: Text('Next'),
+            child: const Text('Next'),
           ),
         ],
       ),

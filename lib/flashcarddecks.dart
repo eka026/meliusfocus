@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'flashcardQnA.dart';
 import 'deck_manager.dart';
+import 'models/flashcard_model.dart';
 
 class FlashcardDecksScreen extends StatefulWidget {
   @override
@@ -12,21 +13,21 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
     {
       'title': 'CS310',
       'flashcards': [
-        {'q': 'What is Flutter?', 'a': 'A UI toolkit from Google'},
-        {'q': 'Who developed Dart?', 'a': 'Google'},
+        Flashcard(question: 'What is Flutter?', answer: 'A UI toolkit from Google'),
+        Flashcard(question: 'Who developed Dart?', answer: 'Google'),
       ],
       'review': 0
     },
     {
       'title': 'CS306',
       'flashcards': [
-        {'q': 'What is a foreign key?', 'a': 'A field referencing another table'},
+        Flashcard(question: 'What is a foreign key?', answer: 'A field referencing another table'),
       ],
       'review': 0
     },
     {
       'title': 'CS307',
-      'flashcards': [],
+      'flashcards': <Flashcard>[],
       'review': 0
     },
   ];
@@ -63,7 +64,9 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
               onPressed: () {
                 if (question.trim().isNotEmpty && answer.trim().isNotEmpty) {
                   setState(() {
-                    decks[index]['flashcards'].add({'q': question, 'a': answer});
+                    decks[index]['flashcards'].add(
+                      Flashcard(question: question, answer: answer),
+                    );
                   });
                   Navigator.pop(context);
                 }
@@ -125,7 +128,7 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
                 setState(() {
                   decks.add({
                     'title': newDeckName.trim(),
-                    'flashcards': <Map<String, String>>[],
+                    'flashcards': <Flashcard>[],
                     'review': 0,
                   });
                 });
@@ -148,7 +151,7 @@ class _FlashcardDecksScreenState extends State<FlashcardDecksScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => FlashcardScreen(
-          flashcards: List<Map<String, String>>.from(decks[index]['flashcards']),
+          flashcards: List<Flashcard>.from(decks[index]['flashcards']),
         ),
       ),
     );

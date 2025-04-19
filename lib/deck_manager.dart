@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'models/flashcard_model.dart';
 
 class DeckManagerScreen extends StatefulWidget {
   final List<Map<String, dynamic>> decks;
@@ -26,6 +27,8 @@ class _DeckManagerScreenState extends State<DeckManagerScreen> {
         itemCount: widget.decks.length,
         itemBuilder: (context, deckIndex) {
           final deck = widget.decks[deckIndex];
+          final List<Flashcard> flashcards = deck['flashcards'];
+
           return Card(
             margin: const EdgeInsets.only(bottom: 16),
             child: ExpansionTile(
@@ -39,17 +42,17 @@ class _DeckManagerScreenState extends State<DeckManagerScreen> {
                 },
               ),
               children: [
-                if (deck['flashcards'].isEmpty)
+                if (flashcards.isEmpty)
                   const ListTile(
                     title: Text('No flashcards in this deck.'),
                   )
                 else
-                  ...deck['flashcards'].asMap().entries.map((entry) {
+                  ...flashcards.asMap().entries.map((entry) {
                     int cardIndex = entry.key;
-                    var card = entry.value;
+                    Flashcard card = entry.value;
                     return ListTile(
-                      title: Text(card['q']),
-                      subtitle: Text(card['a']),
+                      title: Text(card.question),
+                      subtitle: Text(card.answer),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete_outline, color: Colors.red),
                         onPressed: () {

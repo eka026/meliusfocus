@@ -131,11 +131,10 @@ class _FocusModeScreenState extends State<FocusModeScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            if (_mode == 'Pomodoro')
-              Text(
-                _isBreak ? 'Break Time 🍵' : 'Focus Time 📚',
-                style: TextStyle(fontSize: 20),
-              ),
+            Text(
+              _isBreak ? 'Break Time 🍵' : 'Focus Time 📚',
+              style: TextStyle(fontSize: 20),
+            ),
           ],
         ),
       ),

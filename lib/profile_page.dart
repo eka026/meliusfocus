@@ -24,8 +24,10 @@ class ProfilePage extends StatelessWidget {
               // ── Avatar & Name ──
               CircleAvatar(
                 radius: 60,
-                backgroundColor: Colors.grey.shade300,
-                child: const Icon(Icons.person, size: 60, color: Colors.white),
+                backgroundImage: NetworkImage(
+                  'https://t3.ftcdn.net/jpg/02/58/89/90/360_F_258899001_68CalsKTRk6PZQgWH9JhR4heBlncCko9.jpg'
+                ),
+                backgroundColor: Colors.transparent,
               ),
               const SizedBox(height: 16),
               Text(
