@@ -7,6 +7,7 @@ import 'leaderboard.dart';
 import 'settings.dart';
 import 'login_signup_screen.dart';
 import 'profile_page.dart';
+import 'spaced_repetition.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/leaderboard': (context) => const LeaderboardScreen(),
         '/settings': (context) => const SettingsScreen(),
         '/profile': (context) => const ProfilePage(),
+        '/spaced_repetition' : (context) => const SpacedRepetitionScreen(),
       },
     );
   }
