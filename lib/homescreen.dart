@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                     title: 'Spaced Repetition',
                     subtitle: 'Create a spaced repetition plan',
                     onTap: () {
-                      // To be implemented
+                      Navigator.pushNamed(context, '/spaced_repetition');
                     },
                   ),
                   _HomeButton(
