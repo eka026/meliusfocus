@@ -1,6 +1,6 @@
 {
-    "name": "melius_focus",
-    "short_name": "melius_focus",
+    "name": "cs_310_project",
+    "short_name": "cs_310_project",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

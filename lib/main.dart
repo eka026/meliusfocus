@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'homescreen.dart';
+import 'flashcarddecks.dart';
+import 'flashcardQnA.dart';
+import 'FocusMode.dart';
+import 'leaderboard.dart';
+import 'settings.dart';
+import 'login_signup_screen.dart';
+import 'profile_page.dart';
+import 'spaced_repetition.dart';
 import 'routes.dart';
 import 'screens/login_signup_screen.dart';
 import 'utils/app_colors.dart';
 
-void main() => runApp(const MeliusApp());
+void main() {
+  runApp(const MyApp());
+}
 
-class MeliusApp extends StatelessWidget {
-  const MeliusApp({super.key});
-
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,9 +30,17 @@ class MeliusApp extends StatelessWidget {
           border: UnderlineInputBorder(),
         ),
       ),
-      initialRoute: routeLogin,
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/login', // or '/' if you prefer to land on Home directly
       routes: {
-        routeLogin: (_) => const LoginSignupScreen()
+        '/login': (context) => const LoginSignupScreen(),
+        '/': (context) => const HomeScreen(),
+        '/decks': (context) => FlashcardDecksScreen(),
+        '/focus': (context) => FocusModeScreen(),
+        '/leaderboard': (context) => const LeaderboardScreen(),
+        '/settings': (context) => const SettingsScreen(),
+        '/profile': (context) => const ProfilePage(),
+        '/spaced_repetition' : (context) => const SpacedRepetitionScreen(),
       },
     );
   }
