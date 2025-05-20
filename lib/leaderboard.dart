@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'providers/leaderboard_provider.dart';
+import 'dart:convert';
 
 class LeaderboardScreen extends StatelessWidget {
-  const LeaderboardScreen({super.key});
-
-  final List<Map<String, dynamic>> users = const [
-    {
-      'rank': 1,
-      'name': '👑 Ezgi Cemre Kılınç',
-      'xp': 1250,
-    },
-    {
-      'rank': 2,
-      'name': 'Enes Kafa',
-      'xp': 1100,
-    },
-    {
-      'rank': 3,
-      'name': 'Sarp Ali Gözükçık',
-      'xp': 1060,
-    },
-    {
-      'rank': 4,
-      'name': 'Teoman Arabul',
-      'xp': 990,
-    },
-  ];
+  LeaderboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => LeaderboardProvider(),
+      child: LeaderboardView(),
+    );
+  }
+}
+
+class LeaderboardView extends StatelessWidget {
+  const LeaderboardView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<LeaderboardProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Leaderboard"),
@@ -38,66 +32,119 @@ class LeaderboardScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(16),
+          Padding(
+            padding: const EdgeInsets.all(16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                FilterChip(label: Text("Week"), selected: true, onSelected: null),
-                FilterChip(label: Text("Month"), selected: false, onSelected: null),
-                FilterChip(label: Text("All-time"), selected: false, onSelected: null),
+                _TimeFrameChip(
+                  label: "Week",
+                  selected: provider.currentTimeFrame == TimeFrame.week,
+                  onSelected: (_) => provider.setTimeFrame(TimeFrame.week),
+                ),
+                _TimeFrameChip(
+                  label: "Month",
+                  selected: provider.currentTimeFrame == TimeFrame.month,
+                  onSelected: (_) => provider.setTimeFrame(TimeFrame.month),
+                ),
+                _TimeFrameChip(
+                  label: "All-time",
+                  selected: provider.currentTimeFrame == TimeFrame.allTime,
+                  onSelected: (_) => provider.setTimeFrame(TimeFrame.allTime),
+                ),
               ],
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                final user = users[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          "${user['rank']}.",
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(width: 12),
-                        CircleAvatar(
-                          backgroundColor: Colors.grey.shade400,
-                          radius: 20,
-                          child: Icon(Icons.person, color: Colors.white),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            user['name'],
-                            style: const TextStyle(fontSize: 16),
+            child: provider.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : provider.error != null
+                    ? Center(child: Text(provider.error!))
+                    : provider.users.isEmpty
+                        ? const Center(child: Text('No data for this time period'))
+                        : ListView.builder(
+                            itemCount: provider.users.length,
+                            itemBuilder: (context, index) {
+                              final user = provider.users[index];
+                              final isTopUser = index == 0;
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 6),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "${index + 1}.",
+                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      CircleAvatar(
+                                        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                                        radius: 20,
+                                        backgroundImage: user.photoUrl != null && user.photoUrl!.isNotEmpty
+                                            ? MemoryImage(base64Decode(user.photoUrl!))
+                                            : null,
+                                        child: user.photoUrl == null || user.photoUrl!.isEmpty
+                                            ? Icon(Icons.person, color: Theme.of(context).colorScheme.onPrimary)
+                                            : null,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          isTopUser
+                                              ? "👑 ${user.name}"
+                                              : user.name,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceVariant,
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        child: Text("${user.xp} XP"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Text("${user['xp']} XP"),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _TimeFrameChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final Function(bool)? onSelected;
+
+  const _TimeFrameChip({
+    required this.label,
+    required this.selected,
+    this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: onSelected,
+      selectedColor: Theme.of(context).colorScheme.primaryContainer,
+      checkmarkColor: Theme.of(context).colorScheme.primary,
     );
   }
 }

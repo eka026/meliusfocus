@@ -11,7 +11,7 @@ class HomeNavigationDrawer extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Drawer(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -19,31 +19,29 @@ class HomeNavigationDrawer extends StatelessWidget {
             children: [
               const SizedBox(height: 60),
               ListTile(
-                leading: const Icon(Icons.emoji_events),
-                title: const Text('Leaderboard'),
+                leading: Icon(Icons.emoji_events, color: Theme.of(context).colorScheme.onSurface),
+                title: Text('Leaderboard', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 onTap: () {
                   Navigator.pop(context); // close drawer
                   Navigator.pushNamed(context, '/leaderboard');
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Your Profile'),
+                leading: Icon(Icons.person, color: Theme.of(context).colorScheme.onSurface),
+                title: Text('Your Profile', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 onTap: () {
                   Navigator.pop(context); // close drawer
                   Navigator.pushNamed(context, '/profile'); // 🔥 navigate to profile
                 },
               ),
               ListTile( // New Logout ListTile
-                leading: const Icon(Icons.logout),
-                title: const Text('Logout'),
+                leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.onSurface),
+                title: Text('Logout', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
                 onTap: () async {
                   Navigator.pop(context); // close drawer
                   try {
                     await authProvider.signOut();
-                    // Navigate to login screen after logout
-                    // Make sure '/login_signup_screen' is the correct route to your login page
-                    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                    Navigator.pushNamedAndRemoveUntil(context, '/', (_) => false);
                   } catch (e) {
                     // Handle potential errors during sign out, e.g., show a SnackBar
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -57,8 +55,8 @@ class HomeNavigationDrawer extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              leading: Icon(Icons.settings, color: Theme.of(context).colorScheme.onSurface),
+              title: Text('Settings', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/settings');

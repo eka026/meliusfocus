@@ -63,7 +63,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: nextCard,
-            child: const Text('Next'),
+            child: const Text('Next Question'),
           ),
         ],
       ),

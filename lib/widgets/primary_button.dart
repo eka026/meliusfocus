@@ -16,7 +16,7 @@ class PrimaryButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
       ),
       onPressed: onPressed,
-      child: Text(label, style: const TextStyle(fontSize: 18)),
+      child: Text(label, style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.onPrimary)),
     );
   }
 }

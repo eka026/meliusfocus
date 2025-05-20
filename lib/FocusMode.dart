@@ -6,13 +6,9 @@ import 'providers/focus_mode_provider.dart'; // Adjust path if needed
 class FocusModeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Access the providers
-    // context.watch<T>() makes the widget rebuild when T notifies listeners.
+    
     final focusProvider = context.watch<FocusModeProvider>();
 
-    // Listen for feedback messages from the providers to show Snackbars
-    // This is a common pattern to decouple UI feedback from providers logic.
-    // We use a post-frame callback to avoid calling setState during build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (focusProvider.feedbackMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -22,87 +18,131 @@ class FocusModeScreen extends StatelessWidget {
       }
     });
 
+    void showTimePickerSheet() async {
+      if (focusProvider.isRunning) return;
+      int selectedMinutes = focusProvider.remainingMinutes;
+      await showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        builder: (context) {
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Set Timer', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                SizedBox(height: 20),
+                StatefulBuilder(
+                  builder: (context, setState) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.remove_circle_outline),
+                          onPressed: selectedMinutes > FocusModeProvider.MIN_TIME_MINUTES
+                              ? () => setState(() => selectedMinutes -= 5)
+                              : null,
+                          iconSize: 36,
+                        ),
+                        SizedBox(width: 24),
+                        Text(
+                          '$selectedMinutes min',
+                          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 24),
+                        IconButton(
+                          icon: Icon(Icons.add_circle_outline),
+                          onPressed: selectedMinutes < FocusModeProvider.MAX_TIME_MINUTES
+                              ? () => setState(() => selectedMinutes += 5)
+                              : null,
+                          iconSize: 36,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    if (selectedMinutes != focusProvider.remainingMinutes) {
+                      context.read<FocusModeProvider>().setTime(selectedMinutes);
+                    }
+                  },
+                  child: Text('Set'),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: Text('Focus Mode')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ToggleButtons(
-              borderRadius: BorderRadius.circular(12),
-              isSelected: [
-                focusProvider.mode == 'Pomodoro',
-                focusProvider.mode == 'Long Study'
-              ],
-              onPressed: (index) {
-                // Use context.read<T>() for calls inside callbacks (not rebuilding widget)
-                context
-                    .read<FocusModeProvider>()
-                    .setMode(index == 0 ? 'Pomodoro' : 'Long Study');
-              },
-              children: const [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Text('Pomodoro'),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Text('Long Study'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 40),
-            Text(
-              focusProvider.formattedTime,
-              style: TextStyle(
+            GestureDetector(
+              onTap: focusProvider.isRunning ? null : showTimePickerSheet,
+              child: Text(
+                focusProvider.formattedTime,
+                style: TextStyle(
                   fontSize: 72,
                   fontWeight: FontWeight.bold,
-                  color: focusProvider.isBreak
-                      ? Colors.green.shade700
-                      : Theme.of(context).colorScheme.primary),
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             Text(
-              focusProvider.currentPhaseText,
+              'Focus Time 📚',
               style: TextStyle(
-                  fontSize: 24,
-                  color: focusProvider.isBreak
-                      ? Colors.green.shade700
-                      : Theme.of(context).colorScheme.secondary),
+                fontSize: 24,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
             const SizedBox(height: 40),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
                   icon: Icon(Icons.play_arrow),
                   onPressed: focusProvider.isRunning
                       ? null
-                      : () => context.read<FocusModeProvider>().startTimer(),
+                      : () => context.read<FocusModeProvider>().startTimer(context),
                   label: const Text('Start'),
                   style: ElevatedButton.styleFrom(
-                      padding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
                 ),
+                SizedBox(width: 16),
                 ElevatedButton.icon(
                   icon: Icon(Icons.stop),
                   onPressed: !focusProvider.isRunning
                       ? null
-                      : () => context.read<FocusModeProvider>().stopTimer(),
+                      : () => context.read<FocusModeProvider>().stopTimer(context),
                   label: const Text('Stop'),
                   style: ElevatedButton.styleFrom(
-                      padding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
                 ),
+                SizedBox(width: 16),
                 ElevatedButton.icon(
                   icon: Icon(Icons.refresh),
-                  onPressed: () => context.read<FocusModeProvider>().resetTimer(),
+                  onPressed: () => context.read<FocusModeProvider>().resetTimer(context),
                   label: const Text('Reset'),
                   style: ElevatedButton.styleFrom(
-                      padding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
                 ),
               ],
             ),
