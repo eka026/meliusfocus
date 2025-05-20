@@ -27,7 +27,7 @@ class _DeckManagerScreenState extends State<DeckManagerScreen> {
         itemCount: widget.decks.length,
         itemBuilder: (context, deckIndex) {
           final deck = widget.decks[deckIndex];
-          final List<Flashcard> flashcards = deck['flashcards'];
+          final List<Flashcard> flashcards = (deck['flashcards'] as List).cast<Flashcard>();
 
           return Card(
             margin: const EdgeInsets.only(bottom: 16),

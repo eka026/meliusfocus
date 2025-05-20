@@ -133,11 +133,12 @@ class _FlashcardDecksViewState extends State<FlashcardDecksView> {
 
   void _openDeck(BuildContext context, int index) {
     final provider = context.read<FlashcardProvider>();
+    final flashcards = provider.decks[index]['flashcards'].cast<Flashcard>();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => FlashcardScreen(
-          flashcards: List<Flashcard>.from(provider.decks[index]['flashcards']),
+          flashcards: flashcards,
         ),
       ),
     );
