@@ -446,7 +446,12 @@ class _ReviewBottomSheet extends StatelessWidget {
                     Navigator.pop(context);
                     onReview('forgot');
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                    foregroundColor: Theme.of(context).colorScheme.onError,
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
                   child: const Text('Forgot'),
                 ),
                 ElevatedButton(
@@ -454,7 +459,12 @@ class _ReviewBottomSheet extends StatelessWidget {
                     Navigator.pop(context);
                     onReview('partial');
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
                   child: const Text('Partially recalled'),
                 ),
               ],
@@ -468,7 +478,12 @@ class _ReviewBottomSheet extends StatelessWidget {
                     Navigator.pop(context);
                     onReview('effort');
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
                   child: const Text('Recalled with effort'),
                 ),
                 ElevatedButton(
@@ -476,7 +491,12 @@ class _ReviewBottomSheet extends StatelessWidget {
                     Navigator.pop(context);
                     onReview('easy');
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
+                    foregroundColor: Theme.of(context).colorScheme.onTertiary,
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
                   child: const Text('Easily recalled'),
                 ),
               ],

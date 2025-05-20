@@ -47,14 +47,21 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.orange.shade100,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
+                border: Border.all(color: Theme.of(context).dividerColor, width: 1.2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).shadowColor.withOpacity(0.10),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Center(
                 child: Text(
                   showQuestion ? current.question : current.answer,
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
                   textAlign: TextAlign.center,
                 ),
               ),
